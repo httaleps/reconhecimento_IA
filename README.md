@@ -1,10 +1,10 @@
-# 🔍 FaceID — Sistema de Reconhecimento Facial
+# FaceID — Sistema de Reconhecimento Facial
 
 Projeto acadêmico de reconhecimento facial usando **DeepFace** + **FastAPI** + **SQLite**.
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 face_recognition_project/
@@ -26,7 +26,7 @@ face_recognition_project/
 
 ---
 
-## ⚙️ Instalação Local (PyCharm)
+## Instalação Local (PyCharm)
 
 ### 1. Clonar / abrir o projeto no PyCharm
 
@@ -44,7 +44,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-> ⚠️ A primeira instalação do DeepFace é pesada (~1GB de modelos). Tenha paciência.
+> A primeira instalação do DeepFace é pesada (~1GB de modelos). Tenha paciência.
 
 ### 4. Rodar o servidor
 ```bash
@@ -58,7 +58,7 @@ http://localhost:8000
 
 ---
 
-## 🌐 API — Endpoints
+## API — Endpoints
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -77,7 +77,7 @@ http://localhost:8000/docs
 
 ---
 
-## 🚀 Deploy Gratuito — Render.com
+## Deploy Gratuito — Render.com
 
 ### Passo a passo:
 
@@ -103,11 +103,11 @@ http://localhost:8000/docs
    https://faceid-reconhecimento-facial.onrender.com
    ```
 
-> ⚠️ No plano gratuito do Render, o servidor hiberna após 15 min de inatividade. No primeiro acesso pode demorar ~1 min para "acordar".
+> No plano gratuito do Render, o servidor hiberna após 15 min de inatividade. No primeiro acesso pode demorar ~1 min para "acordar".
 
 ---
 
-## 🧠 Tecnologias
+## Tecnologias
 
 | Lib | Função |
 |-----|--------|
@@ -126,7 +126,7 @@ http://localhost:8000/docs
 
 ---
 
-## 📊 Como funciona o sistema de confiança
+## Como funciona o sistema de confiança
 
 O DeepFace calcula a **distância coseno** entre os embeddings faciais (vetores numéricos que representam o rosto).
 
@@ -138,15 +138,15 @@ confiança (%) = (1 - distância) × 100
 
 | Confiança | Interpretação |
 |-----------|---------------|
-| ≥ 75% | ✅ Match seguro |
-| 50–74% | ⚠️ Match incerto |
-| < 50% | ❌ Não reconhecido |
+| ≥ 75% | Match seguro |
+| 50–74% | Match incerto |
+| < 50% | Não reconhecido |
 
 O limiar padrão é `0.40` (cosine), ajustável em `recognition.py`.
 
 ---
 
-## 🗃️ Banco de Dados
+## Banco de Dados
 
 SQLite gerado automaticamente em `faceid.db` com três tabelas:
 
