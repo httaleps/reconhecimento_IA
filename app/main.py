@@ -13,7 +13,13 @@ import uuid
 from datetime import datetime
 from app.database import SessionLocal, engine
 from app import models, crud
-from app.recognition import recognize_face, register_face
+from app.recognition import recognize_face, register_face, FACES_DIR
+
+# Usa caminho absoluto no deploy, relativo no local
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FACES_DIR = os.environ.get("FACES_DIR", os.path.join(BASE_DIR, "faces"))
+
+os.makedirs(FACES_DIR, exist_ok=True)
 
 # Cria as tabelas no banco
 models.Base.metadata.create_all(bind=engine)
@@ -67,7 +73,7 @@ async def register(
             raise HTTPException(status_code=400, detail="Formato inválido. Use JPG ou PNG.")
 
         # Cria pasta do indivíduo
-        person_dir = os.path.join("faces", name.strip().lower().replace(" ", "_"))
+        person_dir = os.path.join(FACES_DIR, name.strip().lower().replace(" ", "_"))
         os.makedirs(person_dir, exist_ok=True)
 
         # Salva arquivo
@@ -116,7 +122,7 @@ async def recognize(
         f.write(content)
 
     try:
-        result = recognize_face(tmp_path, db_path="faces")
+        result = recognize_face(tmp_path, db_path=FACES_DIR)
         return result
     finally:
         if os.path.exists(tmp_path):

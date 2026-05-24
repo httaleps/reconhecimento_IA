@@ -4,7 +4,8 @@ from deepface import DeepFace
 from app.database import SessionLocal
 from app import crud
 
-# Modelo padrão — pode trocar por "Facenet512", "ArcFace", "VGG-Face"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FACES_DIR = os.environ.get("FACES_DIR", os.path.join(BASE_DIR, "faces"))
 MODEL_NAME = "Facenet"
 DETECTOR = "retinaface"
 DISTANCE_METRIC = "cosine"
