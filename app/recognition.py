@@ -6,7 +6,7 @@ from app import crud
 
 # Modelo padrão — pode trocar por "Facenet512", "ArcFace", "VGG-Face"
 MODEL_NAME = "Facenet"
-DETECTOR = "opencv"
+DETECTOR = "retinaface"
 DISTANCE_METRIC = "cosine"
 
 # Limiar de confiança: abaixo disso = rostos diferentes
@@ -14,30 +14,26 @@ THRESHOLD = 0.40  # cosine: quanto menor, mais parecido. 0.40 é conservador
 
 
 def register_face(filepath: str, name: str) -> dict:
-    """
-    Valida que a imagem contém um rosto detectável pelo DeepFace.
-    Retorna sucesso ou mensagem de erro.
-    """
     try:
-        # Tenta extrair o rosto — se falhar, não há rosto válido
         faces = DeepFace.extract_faces(
             img_path=filepath,
             detector_backend=DETECTOR,
-            enforce_detection=True
+            enforce_detection=False,
+            align=True               # ← normaliza rotação do rosto
         )
-        if not faces:
-            return {"success": False, "message": "Nenhum rosto detectado na imagem."}
+
+        valid_faces = [f for f in faces if f.get("confidence", 0) > 0.3]
+
+        if not valid_faces:
+            return {"success": False, "message": "Nenhum rosto detectado. Tente uma foto com melhor iluminação."}
 
         return {
             "success": True,
-            "message": f"Rosto detectado com confiança {faces[0].get('confidence', 0):.1%}",
-            "face_count": len(faces)
+            "message": f"Rosto detectado com sucesso ({len(valid_faces)} rosto(s))",
+            "face_count": len(valid_faces)
         }
     except Exception as e:
-        return {
-            "success": False,
-            "message": f"Erro ao detectar rosto: {str(e)}"
-        }
+        return {"success": False, "message": f"Erro ao processar imagem: {str(e)}"}
 
 
 def recognize_face(img_path: str, db_path: str = "faces") -> dict:

@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.requests import Request
+import tempfile
 import uvicorn
 import os
 import shutil
@@ -108,7 +109,7 @@ async def recognize(
     Retorna nome, confiança e detalhes do match.
     """
     # Salva temporariamente
-    tmp_path = f"/tmp/{uuid.uuid4().hex}.jpg"
+    tmp_path = os.path.join(tempfile.gettempdir(), f"{uuid.uuid4().hex}.jpg")
     with open(tmp_path, "wb") as f:
         content = await file.read()
         f.write(content)
@@ -130,7 +131,7 @@ async def recognize_base64(payload: dict):
     if "," in image_data:
         image_data = image_data.split(",")[1]
 
-    tmp_path = f"/tmp/{uuid.uuid4().hex}.jpg"
+    tmp_path = os.path.join(tempfile.gettempdir(), f"{uuid.uuid4().hex}.jpg")
     with open(tmp_path, "wb") as f:
         f.write(base64.b64decode(image_data))
 
