@@ -10,16 +10,19 @@ import os
 import shutil
 import base64
 import uuid
-from datetime import datetime
 from app.database import SessionLocal, engine
 from app import models, crud
 from app.recognition import recognize_face, register_face, FACES_DIR
 
-# Usa caminho absoluto no deploy, relativo no local
+# ─── CAMINHOS ABSOLUTOS ──────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FACES_DIR = os.environ.get("FACES_DIR", os.path.join(BASE_DIR, "faces"))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
+# Cria todas as pastas necessárias
 os.makedirs(FACES_DIR, exist_ok=True)
+os.makedirs(os.path.join(STATIC_DIR, "css"), exist_ok=True)
+os.makedirs(os.path.join(STATIC_DIR, "js"), exist_ok=True)
 
 # Cria as tabelas no banco
 models.Base.metadata.create_all(bind=engine)
@@ -37,14 +40,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-os.makedirs("static", exist_ok=True)
-os.makedirs("static/css", exist_ok=True)
-os.makedirs("static/js", exist_ok=True)
-os.makedirs("faces", exist_ok=True)
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/faces", StaticFiles(directory="faces"), name="faces")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/faces", StaticFiles(directory=FACES_DIR), name="faces")
+
 
 # ─── FRONTEND ────────────────────────────────────────────────────────────────
 
@@ -60,23 +60,15 @@ async def register(
     name: str = Form(..., description="Nome do indivíduo"),
     file: UploadFile = File(..., description="Foto do rosto (jpg/png)")
 ):
-    """
-    Cadastra um novo rosto no sistema.
-    - Salva a imagem na pasta /faces/{name}/
-    - Persiste no banco de dados
-    """
     db = SessionLocal()
     try:
-        # Valida extensão
         ext = file.filename.split(".")[-1].lower()
         if ext not in ["jpg", "jpeg", "png", "webp"]:
             raise HTTPException(status_code=400, detail="Formato inválido. Use JPG ou PNG.")
 
-        # Cria pasta do indivíduo
         person_dir = os.path.join(FACES_DIR, name.strip().lower().replace(" ", "_"))
         os.makedirs(person_dir, exist_ok=True)
 
-        # Salva arquivo
         filename = f"{uuid.uuid4().hex}.{ext}"
         filepath = os.path.join(person_dir, filename)
 
@@ -84,13 +76,11 @@ async def register(
             content = await file.read()
             f.write(content)
 
-        # Valida se há rosto na imagem via DeepFace
         result = register_face(filepath, name)
         if not result["success"]:
             os.remove(filepath)
             raise HTTPException(status_code=422, detail=result["message"])
 
-        # Persiste no banco
         person = crud.get_or_create_person(db, name)
         photo = crud.create_photo(db, person.id, filepath, filename)
 
@@ -111,19 +101,12 @@ async def register(
 async def recognize(
     file: UploadFile = File(..., description="Foto para reconhecimento")
 ):
-    """
-    Tenta reconhecer o rosto na imagem enviada comparando com o banco cadastrado.
-    Retorna nome, confiança e detalhes do match.
-    """
-    # Salva temporariamente
     tmp_path = os.path.join(tempfile.gettempdir(), f"{uuid.uuid4().hex}.jpg")
     with open(tmp_path, "wb") as f:
         content = await file.read()
         f.write(content)
-
     try:
-        result = recognize_face(tmp_path, db_path=FACES_DIR)
-        return result
+        return recognize_face(tmp_path, db_path=FACES_DIR)
     finally:
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
@@ -131,9 +114,6 @@ async def recognize(
 
 @app.post("/api/recognize/base64", summary="Reconhecer rosto via base64 (câmera)")
 async def recognize_base64(payload: dict):
-    """
-    Reconhece rosto a partir de imagem em base64 (captura da webcam).
-    """
     image_data = payload.get("image", "")
     if "," in image_data:
         image_data = image_data.split(",")[1]
@@ -141,10 +121,8 @@ async def recognize_base64(payload: dict):
     tmp_path = os.path.join(tempfile.gettempdir(), f"{uuid.uuid4().hex}.jpg")
     with open(tmp_path, "wb") as f:
         f.write(base64.b64decode(image_data))
-
     try:
-        result = recognize_face(tmp_path, db_path="faces")
-        return result
+        return recognize_face(tmp_path, db_path=FACES_DIR)
     finally:
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
@@ -185,8 +163,7 @@ async def delete_person(person_id: int):
         if not person:
             raise HTTPException(status_code=404, detail="Pessoa não encontrada")
 
-        # Remove arquivos
-        folder = os.path.join("faces", person.name.strip().lower().replace(" ", "_"))
+        folder = os.path.join(FACES_DIR, person.name.strip().lower().replace(" ", "_"))
         if os.path.exists(folder):
             shutil.rmtree(folder)
 
