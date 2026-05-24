@@ -42,7 +42,7 @@ app.mount("/faces", StaticFiles(directory="faces"), name="faces")
 
 # ─── FRONTEND ────────────────────────────────────────────────────────────────
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
