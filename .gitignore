@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+faceid.db
+faces/
+*.egg-info/
+dist/
+build/
+.deepface/
