@@ -31,13 +31,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static files e templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/faces", StaticFiles(directory="faces"), name="faces")
+os.makedirs("static", exist_ok=True)
+os.makedirs("static/css", exist_ok=True)
+os.makedirs("static/js", exist_ok=True)
+os.makedirs("faces", exist_ok=True)
 templates = Jinja2Templates(directory="templates")
 
-os.makedirs("faces", exist_ok=True)
-
+app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/faces", StaticFiles(directory="faces"), name="faces")
 
 # ─── FRONTEND ────────────────────────────────────────────────────────────────
 
