@@ -44,7 +44,7 @@ app.mount("/faces", StaticFiles(directory="faces"), name="faces")
 
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request=request, name="index.html")
 
 
 # ─── API: CADASTRO ───────────────────────────────────────────────────────────
