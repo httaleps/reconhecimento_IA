@@ -32,14 +32,11 @@ models.Base.metadata.create_all(bind=engine)
 async def lifespan(app):
     import asyncio
     async def warmup():
-        await asyncio.sleep(2)
+        await asyncio.sleep(3)
         try:
             sync_faces_from_cloudinary(FACES_DIR)
-            from deepface import DeepFace
-            DeepFace.build_model("Facenet")
-            print("✅ Startup completo")
         except Exception as e:
-            print(f"⚠️ Warmup: {e}")
+            print(f"⚠️ Sync Cloudinary: {e}")
     asyncio.create_task(warmup())
     yield
 
