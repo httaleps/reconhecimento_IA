@@ -22,6 +22,8 @@ class Photo(Base):
     person_id = Column(Integer, ForeignKey("persons.id"), nullable=False)
     filepath = Column(String, nullable=False)
     filename = Column(String, nullable=False)
+    cloudinary_url = Column(String, nullable=True)
+    cloudinary_public_id = Column(String, nullable=True)
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
     person = relationship("Person", back_populates="photos")

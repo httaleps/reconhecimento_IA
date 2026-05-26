@@ -67,3 +67,17 @@ def get_recognition_logs(db: Session, limit: int = 100):
         .order_by(models.RecognitionLog.timestamp.desc())\
         .limit(limit)\
         .all()
+
+def create_photo(db: Session, person_id: int, filepath: str, filename: str,
+                 cloudinary_url: str = None, cloudinary_public_id: str = None):
+    photo = models.Photo(
+        person_id=person_id,
+        filepath=filepath,
+        filename=filename,
+        cloudinary_url=cloudinary_url,
+        cloudinary_public_id=cloudinary_public_id
+    )
+    db.add(photo)
+    db.commit()
+    db.refresh(photo)
+    return photo
