@@ -59,6 +59,13 @@
       backdrop-filter: blur(20px);
     }
 
+    @media (max-width: 600px) {
+      header { padding: 14px 16px; }
+      header h1 { font-size: 1rem; }
+      header p { display: none; }
+      .status-pill { font-size: 0.65rem; padding: 3px 10px; }
+    }
+
     .logo-icon {
       width: 40px; height: 40px;
       border: 2px solid var(--accent);
@@ -113,6 +120,10 @@
       padding: 40px 20px;
     }
 
+    @media (max-width: 600px) {
+      main { padding: 16px 12px; }
+    }
+
     /* TABS */
     .tabs {
       display: flex;
@@ -122,6 +133,8 @@
       border-radius: 12px;
       padding: 4px;
       margin-bottom: 32px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tab-btn {
@@ -136,6 +149,8 @@
       font-size: 0.8rem;
       letter-spacing: 0.05em;
       transition: all 0.2s;
+      white-space: nowrap;
+      min-width: 80px;
     }
 
     .tab-btn.active {
@@ -173,12 +188,14 @@
 
     /* GRID 2 COL */
     .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
 
-    @media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+  .grid2 { grid-template-columns: 1fr; }
+}
 
     /* CAMERA */
     .camera-wrap {

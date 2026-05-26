@@ -13,6 +13,29 @@ import uuid
 from app.database import SessionLocal, engine
 from app import models, crud
 from app.recognition import recognize_face, register_face, FACES_DIR
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app):
+    # Pré-carrega o DeepFace em background ao iniciar
+    import asyncio
+    async def warmup():
+        await asyncio.sleep(2)  # espera o servidor estar pronto
+        try:
+            from deepface import DeepFace
+            DeepFace.build_model("Facenet")
+            print("✅ DeepFace carregado com sucesso")
+        except Exception as e:
+            print(f"⚠️ Warmup DeepFace: {e}")
+    asyncio.create_task(warmup())
+    yield
+
+app = FastAPI(
+    title="FaceID API",
+    description="Sistema de reconhecimento facial acadêmico com DeepFace",
+    version="1.0.0",
+    lifespan=lifespan  # ← adicione aqui
+)
 
 # ─── CAMINHOS ABSOLUTOS ──────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
