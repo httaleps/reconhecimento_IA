@@ -44,7 +44,10 @@ def download_face_tmp(cloudinary_url: str) -> str:
 def delete_face(public_id: str):
     """Remove foto do Cloudinary."""
     if CLOUDINARY_ENABLED and public_id:
-        cloudinary.uploader.destroy(public_id)
+        try:
+            cloudinary.uploader.destroy(public_id)
+        except Exception as e:
+            print(f"Erro ao deletar do Cloudinary: {e}")
 
 
 def sync_faces_from_cloudinary(faces_dir: str):
@@ -53,6 +56,7 @@ def sync_faces_from_cloudinary(faces_dir: str):
     Chamado no startup para o DeepFace ter acesso às imagens.
     """
     if not CLOUDINARY_ENABLED:
+        print("Cloudinary não configurado, pulando sync.")
         return
 
     os.makedirs(faces_dir, exist_ok=True)
@@ -62,11 +66,13 @@ def sync_faces_from_cloudinary(faces_dir: str):
             prefix="faceid/",
             max_results=500
         )
-        for resource in result.get("resources", []):
+        resources = result.get("resources", [])
+        for resource in resources:
             public_id = resource["public_id"]
             url = resource["secure_url"]
-            # Reconstrói estrutura de pastas: faces/nome/arquivo.jpg
-            parts = public_id.replace("faceid/", "").split("/")
+            # Estrutura: faceid/nome_pessoa/arquivo → faces/nome_pessoa/arquivo.jpg
+            relative = public_id.replace("faceid/", "")
+            parts = relative.split("/")
             if len(parts) < 2:
                 continue
             person_folder = os.path.join(faces_dir, parts[0])
@@ -76,6 +82,6 @@ def sync_faces_from_cloudinary(faces_dir: str):
                 img_data = requests.get(url, timeout=15).content
                 with open(local_path, "wb") as f:
                     f.write(img_data)
-        print(f"Sincronizado {len(result.get('resources', []))} fotos do Cloudinary")
+        print(f"Sincronizado {len(resources)} fotos do Cloudinary")
     except Exception as e:
         print(f"Erro ao sincronizar Cloudinary: {e}")
