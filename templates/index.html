@@ -484,17 +484,17 @@
 
 <main>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('recognize')">📷 Reconhecer</button>
-    <button class="tab-btn" onclick="switchTab('register')">➕ Cadastrar</button>
-    <button class="tab-btn" onclick="switchTab('persons')">👥 Pessoas</button>
-    <button class="tab-btn" onclick="switchTab('logs')">📋 Logs</button>
+    <button class="tab-btn active" onclick="switchTab('recognize')">Reconhecer</button>
+    <button class="tab-btn" onclick="switchTab('register')">Cadastrar</button>
+    <button class="tab-btn" onclick="switchTab('persons')">Pessoas</button>
+    <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
   </div>
 
   <!-- TAB: RECONHECER -->
   <div class="tab-panel active" id="tab-recognize">
     <div class="grid2">
       <div class="card">
-        <div class="card-title">📡 CÂMERA AO VIVO</div>
+        <div class="card-title">CÂMERA AO VIVO</div>
         <div class="camera-wrap">
           <video id="videoEl" autoplay playsinline></video>
           <div class="camera-overlay">
@@ -503,7 +503,7 @@
         </div>
         <div style="display:flex; gap:8px; margin-top:12px;">
           <button class="btn btn-accent" onclick="startCamera()" id="btnStartCam">▶ Iniciar Câmera</button>
-          <button class="btn btn-primary" onclick="captureAndRecognize()" id="btnCapture" disabled>🔍 Reconhecer</button>
+          <button class="btn btn-primary" onclick="captureAndRecognize()" id="btnCapture" disabled>Reconhecer</button>
         </div>
         <div id="liveResult">
           <span class="scanning-text"><span class="spinner"></span> Aguardando câmera...</span>
@@ -511,7 +511,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">🖼️ UPLOAD DE FOTO</div>
+        <div class="card-title">🖼UPLOAD DE FOTO</div>
         <input type="file" id="recognizeFile" accept="image/*" onchange="previewRecognize(event)">
         <div class="dropzone" onclick="document.getElementById('recognizeFile').click()" id="recognizeDrop">
           <div class="icon">📤</div>
@@ -519,7 +519,7 @@
           <small>JPG, PNG, WEBP</small>
         </div>
         <img id="recognizePreview" src="" alt="">
-        <button class="btn btn-primary mt-3" onclick="recognizeUpload()" id="btnRecUpload" disabled>🔍 Reconhecer Foto</button>
+        <button class="btn btn-primary mt-3" onclick="recognizeUpload()" id="btnRecUpload" disabled>Reconhecer Foto</button>
 
         <div class="result-panel" id="uploadResult">
           <div class="result-name" id="uploadResultName"></div>
@@ -543,7 +543,7 @@
   <div class="tab-panel" id="tab-register">
     <div class="grid2">
       <div class="card">
-        <div class="card-title">✏️ DADOS DO INDIVÍDUO</div>
+        <div class="card-title">DADOS DO INDIVÍDUO</div>
         <div class="input-group">
           <label>NOME COMPLETO</label>
           <input type="text" id="regName" placeholder="Ex: João Silva" />
@@ -559,7 +559,7 @@
           <img id="registerPreview" src="" alt="">
         </div>
         <button class="btn btn-primary" onclick="registerPerson()" id="btnRegister">
-          ➕ Cadastrar Pessoa
+          Cadastrar Pessoa
         </button>
         <div class="result-panel" id="registerResult" style="margin-top:16px;">
           <div id="registerResultMsg"></div>
@@ -567,7 +567,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">📌 DICAS PARA BOAS FOTOS</div>
+        <div class="card-title">DICAS PARA BOAS FOTOS</div>
         <div style="color: var(--muted); font-size: 0.88rem; line-height: 1.8;">
           <p>✅ Rosto centralizado na imagem</p>
           <p>✅ Iluminação frontal uniforme</p>
@@ -591,8 +591,8 @@
   <div class="tab-panel" id="tab-persons">
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
-        <span>👥 PESSOAS CADASTRADAS</span>
-        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadPersons()">🔄 Atualizar</button>
+        <span>PESSOAS CADASTRADAS</span>
+        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadPersons()">Atualizar</button>
       </div>
       <div id="personsContainer">
         <p class="text-muted" style="text-align:center; padding: 30px 0;">Carregando...</p>
@@ -604,8 +604,8 @@
   <div class="tab-panel" id="tab-logs">
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
-        <span>📋 HISTÓRICO DE RECONHECIMENTOS</span>
-        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadLogs()">🔄 Atualizar</button>
+        <span>HISTÓRICO DE RECONHECIMENTOS</span>
+        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadLogs()">Atualizar</button>
       </div>
       <div id="logsContainer">
         <p class="text-muted" style="text-align:center; padding: 30px 0;">Carregando...</p>
