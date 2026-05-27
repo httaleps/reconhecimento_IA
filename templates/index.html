@@ -2,479 +2,18 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>FaceID — Reconhecimento Facial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --surface2: #1a1a26;
-      --border: #2a2a3d;
-      --accent: #00e5ff;
-      --accent2: #7b61ff;
-      --success: #00e676;
-      --danger: #ff5252;
-      --warn: #ffab40;
-      --text: #e8e8f0;
-      --muted: #6b6b8a;
-      --mono: 'Space Mono', monospace;
-      --sans: 'DM Sans', sans-serif;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    header {
-      position: relative;
-      z-index: 10;
-      border-bottom: 1px solid var(--border);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      background: rgba(10,10,15,0.8);
-      backdrop-filter: blur(20px);
-    }
-
-    @media (max-width: 600px) {
-      header { padding: 14px 16px; }
-      header h1 { font-size: 1rem; }
-      header p { display: none; }
-      .status-pill { font-size: 0.65rem; padding: 3px 10px; }
-    }
-
-    .logo-icon {
-      width: 40px; height: 40px;
-      border: 2px solid var(--accent);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-
-    header h1 {
-      font-family: var(--mono);
-      font-size: 1.2rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-    }
-
-    header p {
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-family: var(--mono);
-    }
-
-    .status-pill {
-      margin-left: auto;
-      background: rgba(0,230,118,0.1);
-      border: 1px solid var(--success);
-      color: var(--success);
-      padding: 4px 14px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-family: var(--mono);
-      display: flex; align-items: center; gap: 6px;
-    }
-
-    .status-dot {
-      width: 6px; height: 6px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.4); }
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    @media (max-width: 600px) {
-      main { padding: 16px 12px; }
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 32px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px 20px;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      border-radius: 9px;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
-      transition: all 0.2s;
-      white-space: nowrap;
-      min-width: 80px;
-    }
-
-    .tab-btn.active { background: var(--accent2); color: white; }
-    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 20px;
-    }
-
-    .card-title {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 900px) {
-      .grid2 { grid-template-columns: 1fr; }
-    }
-
-    .camera-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4/3;
-      background: #000;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    #videoEl {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1);
-    }
-
-    .camera-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-    }
-
-    .face-box {
-      width: 200px; height: 240px;
-      border: 2px solid var(--accent);
-      border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
-      box-shadow: 0 0 30px rgba(0,229,255,0.2);
-      animation: scanline 3s linear infinite;
-    }
-
-    @keyframes scanline {
-      0%, 100% { box-shadow: 0 0 20px rgba(0,229,255,0.2); }
-      50% { box-shadow: 0 0 40px rgba(0,229,255,0.5); }
-    }
-
-    .input-group { margin-bottom: 16px; }
-
-    label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-family: var(--mono);
-      margin-bottom: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      padding: 10px 14px;
-      font-family: var(--sans);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input[type="text"]:focus { border-color: var(--accent2); }
-
-    .dropzone {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 40px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .dropzone:hover, .dropzone.dragover {
-      border-color: var(--accent2);
-      background: rgba(123,97,255,0.05);
-      color: var(--text);
-    }
-
-    .dropzone .icon { font-size: 2.5rem; margin-bottom: 8px; }
-    .dropzone small { display: block; font-size: 0.75rem; margin-top: 4px; font-family: var(--mono); }
-
-    /* ── PREVIEWS DE IMAGEM ── */
-    #previewImg,
-    #registerPreview,
-    #recognizePreview {
-      width: 100%;
-      max-height: 280px;
-      object-fit: cover;
-      object-position: center top;
-      border-radius: 8px;
-      margin-top: 12px;
-      display: none;
-      border: 1px solid var(--border);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 24px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      transition: all 0.2s;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .btn-primary { background: var(--accent2); color: white; }
-    .btn-primary:hover { background: #6650e8; transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-
-    .btn-accent {
-      background: rgba(0,229,255,0.1);
-      color: var(--accent);
-      border: 1px solid var(--accent);
-    }
-    .btn-accent:hover { background: rgba(0,229,255,0.2); }
-
-    .btn-danger {
-      background: rgba(255,82,82,0.1);
-      color: var(--danger);
-      border: 1px solid var(--danger);
-    }
-    .btn-danger:hover { background: rgba(255,82,82,0.2); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-    .result-panel {
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 16px;
-      display: none;
-      border: 1px solid var(--border);
-    }
-
-    .result-panel.success { background: rgba(0,230,118,0.08); border-color: var(--success); }
-    .result-panel.error { background: rgba(255,82,82,0.08); border-color: var(--danger); }
-    .result-panel.warn { background: rgba(255,171,64,0.08); border-color: var(--warn); }
-
-    .result-name {
-      font-family: var(--mono);
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .confidence-wrap { margin-top: 12px; }
-
-    .confidence-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.78rem;
-      font-family: var(--mono);
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .confidence-bar {
-      height: 6px;
-      background: var(--surface2);
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .confidence-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.6s ease;
-      width: 0%;
-    }
-
-    .confidence-fill.high { background: var(--success); }
-    .confidence-fill.mid { background: var(--warn); }
-    .confidence-fill.low { background: var(--danger); }
-
-    .persons-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    .person-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .person-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
-
-    .person-avatar {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
-      margin: 0 auto 10px;
-      display: block;
-      background: var(--surface);
-      font-size: 2rem;
-      line-height: 80px;
-    }
-
-    .person-name { font-family: var(--mono); font-size: 0.85rem; margin-bottom: 4px; word-break: break-word; }
-    .person-meta { font-size: 0.72rem; color: var(--muted); margin-bottom: 10px; }
-
-    .log-entry {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-    }
-
-    .log-entry:last-child { border-bottom: none; }
-
-    .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .log-dot.ok { background: var(--success); }
-    .log-dot.fail { background: var(--danger); }
-    .log-name { font-family: var(--mono); flex: 1; }
-    .log-conf { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
-    .log-time { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
-
-    #toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      z-index: 9999;
-      padding: 14px 20px;
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s;
-      max-width: 320px;
-    }
-
-    #toast.show { transform: translateY(0); opacity: 1; }
-    #toast.success { background: var(--success); color: #000; }
-    #toast.error { background: var(--danger); color: white; }
-    #toast.info { background: var(--accent2); color: white; }
-
-    .spinner {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    #liveResult {
-      margin-top: 16px;
-      padding: 16px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      min-height: 60px;
-    }
-
-    .scanning-text { color: var(--muted); display: flex; align-items: center; gap: 8px; }
-
-    input[type="file"] { display: none; }
-
-    .mb-3 { margin-bottom: 12px; }
-    .mt-3 { margin-top: 12px; }
-    .text-muted { color: var(--muted); font-size: 0.8rem; }
-    .text-mono { font-family: var(--mono); }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header>
   <div class="logo-icon">🔍</div>
   <div>
     <h1>FACE_ID</h1>
-    <p>Sistema de Reconhecimento Facial — DeepFace + FastAPI</p>
+    <p>Sistema de Reconhecimento Facial</p>
   </div>
   <div class="status-pill">
     <div class="status-dot"></div>
@@ -484,15 +23,16 @@
 
 <main>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('recognize')">Reconhecer</button>
-    <button class="tab-btn" onclick="switchTab('register')">Cadastrar</button>
-    <button class="tab-btn" onclick="switchTab('persons')">Pessoas</button>
-    <button class="tab-btn" onclick="switchTab('logs')">Logs</button>
+    <button class="tab-btn active" onclick="switchTab('recognize', this)">Reconhecer</button>
+    <button class="tab-btn" onclick="switchTab('register', this)">Cadastrar</button>
+    <button class="tab-btn" onclick="switchTab('persons', this)">Pessoas</button>
+    <button class="tab-btn" onclick="switchTab('logs', this)">Logs</button>
   </div>
 
   <!-- TAB: RECONHECER -->
   <div class="tab-panel active" id="tab-recognize">
     <div class="grid2">
+
       <div class="card">
         <div class="card-title">CÂMERA AO VIVO</div>
         <div class="camera-wrap">
@@ -500,8 +40,9 @@
           <div class="camera-overlay">
             <div class="face-box"></div>
           </div>
+          <button class="flip-btn" id="flipBtn" onclick="flipCamera()" title="Trocar câmera">🔄</button>
         </div>
-        <div style="display:flex; gap:8px; margin-top:12px;">
+        <div class="camera-controls">
           <button class="btn btn-accent" onclick="startCamera()" id="btnStartCam">▶ Iniciar Câmera</button>
           <button class="btn btn-primary" onclick="captureAndRecognize()" id="btnCapture" disabled>Reconhecer</button>
         </div>
@@ -511,12 +52,12 @@
       </div>
 
       <div class="card">
-        <div class="card-title">🖼UPLOAD DE FOTO</div>
+        <div class="card-title">UPLOAD DE FOTO</div>
         <input type="file" id="recognizeFile" accept="image/*" onchange="previewRecognize(event)">
         <div class="dropzone" onclick="document.getElementById('recognizeFile').click()" id="recognizeDrop">
           <div class="icon">📤</div>
           <strong>Clique ou arraste uma foto</strong>
-          <small>JPG, PNG, WEBP</small>
+          <small>JPG, PNG, WEBP — abre galeria no celular</small>
         </div>
         <img id="recognizePreview" src="" alt="">
         <button class="btn btn-primary mt-3" onclick="recognizeUpload()" id="btnRecUpload" disabled>Reconhecer Foto</button>
@@ -535,6 +76,7 @@
           </div>
         </div>
       </div>
+
     </div>
     <canvas id="captureCanvas" style="display:none"></canvas>
   </div>
@@ -542,19 +84,20 @@
   <!-- TAB: CADASTRAR -->
   <div class="tab-panel" id="tab-register">
     <div class="grid2">
+
       <div class="card">
         <div class="card-title">DADOS DO INDIVÍDUO</div>
         <div class="input-group">
           <label>NOME COMPLETO</label>
-          <input type="text" id="regName" placeholder="Ex: João Silva" />
+          <input type="text" id="regName" placeholder="Ex: João Silva" autocomplete="off" />
         </div>
         <div class="input-group">
           <label>FOTO</label>
-          <input type="file" id="registerFile" accept="image/*" onchange="previewRegister(event)">
+          <input type="file" id="registerFile" accept="image/*" capture="environment" onchange="previewRegister(event)">
           <div class="dropzone" onclick="document.getElementById('registerFile').click()" id="registerDrop">
             <div class="icon">🤳</div>
             <strong>Clique para selecionar foto</strong>
-            <small>Rosto visível, boa iluminação</small>
+            <small>Galeria ou câmera — rosto visível, boa iluminação</small>
           </div>
           <img id="registerPreview" src="" alt="">
         </div>
@@ -568,7 +111,7 @@
 
       <div class="card">
         <div class="card-title">DICAS PARA BOAS FOTOS</div>
-        <div style="color: var(--muted); font-size: 0.88rem; line-height: 1.8;">
+        <div style="color: var(--muted); font-size: 0.85rem; line-height: 2;">
           <p>✅ Rosto centralizado na imagem</p>
           <p>✅ Iluminação frontal uniforme</p>
           <p>✅ Olhos abertos e visíveis</p>
@@ -576,14 +119,15 @@
           <p>✅ Fundo neutro (preferencialmente)</p>
           <br>
           <p>❌ Evitar sombras no rosto</p>
-          <p>❌ Evitar fotos de perfil ou anguladas</p>
+          <p>❌ Evitar fotos muito anguladas</p>
           <p>❌ Evitar baixa resolução</p>
           <br>
-          <p class="text-mono" style="font-size:0.75rem; color: var(--accent2);">
+          <p class="text-mono" style="font-size:0.72rem; color: var(--accent2);">
             Cadastre múltiplas fotos da mesma pessoa para melhor precisão.
           </p>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -592,7 +136,7 @@
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
         <span>PESSOAS CADASTRADAS</span>
-        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadPersons()">Atualizar</button>
+        <button class="btn btn-accent" style="width:auto; padding: 8px 14px; font-size:0.72rem;" onclick="loadPersons()">Atualizar</button>
       </div>
       <div id="personsContainer">
         <p class="text-muted" style="text-align:center; padding: 30px 0;">Carregando...</p>
@@ -604,8 +148,8 @@
   <div class="tab-panel" id="tab-logs">
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
-        <span>HISTÓRICO DE RECONHECIMENTOS</span>
-        <button class="btn btn-accent" style="width:auto; padding: 6px 16px; font-size:0.75rem;" onclick="loadLogs()">Atualizar</button>
+        <span>HISTÓRICO</span>
+        <button class="btn btn-accent" style="width:auto; padding: 8px 14px; font-size:0.72rem;" onclick="loadLogs()">Atualizar</button>
       </div>
       <div id="logsContainer">
         <p class="text-muted" style="text-align:center; padding: 30px 0;">Carregando...</p>
@@ -618,16 +162,21 @@
 
 <script>
   const API = '';
+  let stream = null;
+  let useFrontCamera = true;
+  let cameraStarted = false;
 
-  function switchTab(name) {
+  // ── TABS ──────────────────────────────────────────
+  function switchTab(name, btn) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-    event.target.classList.add('active');
+    btn.classList.add('active');
     if (name === 'persons') loadPersons();
     if (name === 'logs') loadLogs();
   }
 
+  // ── TOAST ─────────────────────────────────────────
   function toast(msg, type = 'info') {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -635,18 +184,41 @@
     setTimeout(() => t.className = '', 3000);
   }
 
-  let stream = null;
-
+  // ── CÂMERA ────────────────────────────────────────
   async function startCamera() {
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-      document.getElementById('videoEl').srcObject = stream;
+      if (stream) stream.getTracks().forEach(t => t.stop());
+
+      const constraints = {
+        video: {
+          facingMode: useFrontCamera ? 'user' : 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const video = document.getElementById('videoEl');
+      video.srcObject = stream;
+
+      // Espelha só câmera frontal
+      video.style.transform = useFrontCamera ? 'scaleX(-1)' : 'scaleX(1)';
+
       document.getElementById('btnCapture').disabled = false;
       document.getElementById('btnStartCam').textContent = '📹 Câmera Ativa';
-      document.getElementById('liveResult').innerHTML = '<span class="scanning-text"><span class="spinner"></span> Câmera pronta. Clique em Reconhecer.</span>';
+      document.getElementById('flipBtn').classList.add('visible');
+      document.getElementById('liveResult').innerHTML =
+        '<span class="scanning-text"><span class="spinner"></span> Câmera pronta. Clique em Reconhecer.</span>';
+
+      cameraStarted = true;
     } catch (e) {
       toast('Erro ao acessar câmera: ' + e.message, 'error');
     }
+  }
+
+  function flipCamera() {
+    useFrontCamera = !useFrontCamera;
+    if (cameraStarted) startCamera();
   }
 
   async function captureAndRecognize() {
@@ -655,11 +227,15 @@
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0);
-    const b64 = canvas.toDataURL('image/jpeg', 0.9);
 
+    // Se câmera frontal, desfaz espelhamento para enviar imagem correta
+    if (useFrontCamera) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0);
+
+    const b64 = canvas.toDataURL('image/jpeg', 0.85);
     const res = document.getElementById('liveResult');
     res.innerHTML = '<span class="scanning-text"><span class="spinner"></span> Analisando...</span>';
 
@@ -683,17 +259,18 @@
 
     if (data.recognized) {
       res.innerHTML = `
-        <div style="color:var(--success); font-weight:700; font-size:1.1rem; margin-bottom:8px;">✅ ${data.person}</div>
-        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:8px;">${data.message}</div>
+        <div style="color:var(--success);font-weight:700;font-size:1.05rem;margin-bottom:6px;">✅ ${data.person}</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">${data.message}</div>
         <div class="confidence-label"><span>Confiança</span><span>${conf}%</span></div>
-        <div class="confidence-bar"><div class="confidence-fill" style="width:${conf}%; background:${barColor}"></div></div>`;
+        <div class="confidence-bar"><div class="confidence-fill" style="width:${conf}%;background:${barColor}"></div></div>`;
     } else {
       res.innerHTML = `
-        <div style="color:var(--danger); font-weight:700; margin-bottom:6px;">❌ Não reconhecido</div>
-        <div style="font-size:0.8rem; color:var(--muted);">${data.message}</div>`;
+        <div style="color:var(--danger);font-weight:700;margin-bottom:6px;">❌ Não reconhecido</div>
+        <div style="font-size:0.78rem;color:var(--muted);">${data.message}</div>`;
     }
   }
 
+  // ── UPLOAD RECONHECER ─────────────────────────────
   function previewRecognize(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -732,22 +309,22 @@
 
   function showUploadResult(data) {
     const panel = document.getElementById('uploadResult');
-    const name = document.getElementById('uploadResultName');
-    const msg = document.getElementById('uploadResultMsg');
-    const pct = document.getElementById('uploadConfPct');
-    const fill = document.getElementById('uploadConfFill');
     const conf = data.confidence || 0;
 
     panel.style.display = 'block';
     panel.className = 'result-panel ' + (data.recognized ? 'success' : 'error');
-    name.textContent = data.recognized ? data.person : 'Desconhecido';
-    name.style.color = data.recognized ? 'var(--success)' : 'var(--danger)';
-    msg.textContent = data.message;
-    pct.textContent = conf + '%';
+
+    document.getElementById('uploadResultName').textContent = data.recognized ? data.person : 'Desconhecido';
+    document.getElementById('uploadResultName').style.color = data.recognized ? 'var(--success)' : 'var(--danger)';
+    document.getElementById('uploadResultMsg').textContent = data.message;
+    document.getElementById('uploadConfPct').textContent = conf + '%';
+
+    const fill = document.getElementById('uploadConfFill');
     fill.style.width = conf + '%';
     fill.className = 'confidence-fill ' + (conf >= 75 ? 'high' : conf >= 50 ? 'mid' : 'low');
   }
 
+  // ── CADASTRO ──────────────────────────────────────
   function previewRegister(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -801,6 +378,7 @@
     }
   }
 
+  // ── PESSOAS ───────────────────────────────────────
   async function loadPersons() {
     const cont = document.getElementById('personsContainer');
     cont.innerHTML = '<p class="text-muted" style="text-align:center;padding:20px">Carregando...</p>';
@@ -813,13 +391,13 @@
       }
       cont.innerHTML = `<div class="persons-grid">${data.persons.map(p => `
         <div class="person-card">
-          <div class="person-avatar" style="display:flex;align-items:center;justify-content:center;font-size:2rem">👤</div>
+          <div class="person-avatar">👤</div>
           <div class="person-name">${p.name}</div>
           <div class="person-meta">${p.photo_count} foto${p.photo_count !== 1 ? 's' : ''}</div>
-          <button class="btn btn-danger" style="padding:6px 12px;font-size:0.72rem" onclick="deletePerson(${p.id}, '${p.name}')">🗑 Remover</button>
+          <button class="btn btn-danger" style="padding:8px 10px;font-size:0.7rem" onclick="deletePerson(${p.id}, '${p.name}')">🗑 Remover</button>
         </div>`).join('')}</div>`;
     } catch (e) {
-      cont.innerHTML = `<p style="color:var(--danger)">Erro ao carregar: ${e.message}</p>`;
+      cont.innerHTML = `<p style="color:var(--danger)">Erro: ${e.message}</p>`;
     }
   }
 
@@ -835,6 +413,7 @@
     }
   }
 
+  // ── LOGS ──────────────────────────────────────────
   async function loadLogs() {
     const cont = document.getElementById('logsContainer');
     cont.innerHTML = '<p class="text-muted" style="text-align:center;padding:20px">Carregando...</p>';
@@ -853,10 +432,11 @@
           <div class="log-time">${new Date(l.timestamp).toLocaleString('pt-BR')}</div>
         </div>`).join('');
     } catch (e) {
-      cont.innerHTML = `<p style="color:var(--danger)">Erro ao carregar logs: ${e.message}</p>`;
+      cont.innerHTML = `<p style="color:var(--danger)">Erro: ${e.message}</p>`;
     }
   }
 
+  // ── DRAG & DROP ───────────────────────────────────
   ['recognizeDrop', 'registerDrop'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('dragover'); });
