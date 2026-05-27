@@ -33,7 +33,6 @@
       overflow-x: hidden;
     }
 
-    /* GRID BG */
     body::before {
       content: '';
       position: fixed;
@@ -46,7 +45,6 @@
       z-index: 0;
     }
 
-    /* HEADER */
     header {
       position: relative;
       z-index: 10;
@@ -111,7 +109,6 @@
       50% { opacity: 0.5; transform: scale(1.4); }
     }
 
-    /* MAIN LAYOUT */
     main {
       position: relative;
       z-index: 1;
@@ -124,7 +121,6 @@
       main { padding: 16px 12px; }
     }
 
-    /* TABS */
     .tabs {
       display: flex;
       gap: 4px;
@@ -153,20 +149,12 @@
       min-width: 80px;
     }
 
-    .tab-btn.active {
-      background: var(--accent2);
-      color: white;
-    }
-
-    .tab-btn:hover:not(.active) {
-      color: var(--text);
-      background: var(--surface2);
-    }
+    .tab-btn.active { background: var(--accent2); color: white; }
+    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface2); }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* CARDS */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -186,18 +174,16 @@
       gap: 8px;
     }
 
-    /* GRID 2 COL */
     .grid2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
 
-@media (max-width: 900px) {
-  .grid2 { grid-template-columns: 1fr; }
-}
+    @media (max-width: 900px) {
+      .grid2 { grid-template-columns: 1fr; }
+    }
 
-    /* CAMERA */
     .camera-wrap {
       position: relative;
       width: 100%;
@@ -236,7 +222,6 @@
       50% { box-shadow: 0 0 40px rgba(0,229,255,0.5); }
     }
 
-    /* INPUTS */
     .input-group { margin-bottom: 16px; }
 
     label {
@@ -283,15 +268,20 @@
     .dropzone .icon { font-size: 2.5rem; margin-bottom: 8px; }
     .dropzone small { display: block; font-size: 0.75rem; margin-top: 4px; font-family: var(--mono); }
 
-    #previewImg {
+    /* ── PREVIEWS DE IMAGEM ── */
+    #previewImg,
+    #registerPreview,
+    #recognizePreview {
       width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      object-position: center top;
       border-radius: 8px;
       margin-top: 12px;
       display: none;
       border: 1px solid var(--border);
     }
 
-    /* BUTTONS */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -308,11 +298,7 @@
       justify-content: center;
     }
 
-    .btn-primary {
-      background: var(--accent2);
-      color: white;
-    }
-
+    .btn-primary { background: var(--accent2); color: white; }
     .btn-primary:hover { background: #6650e8; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
 
@@ -321,7 +307,6 @@
       color: var(--accent);
       border: 1px solid var(--accent);
     }
-
     .btn-accent:hover { background: rgba(0,229,255,0.2); }
 
     .btn-danger {
@@ -329,12 +314,9 @@
       color: var(--danger);
       border: 1px solid var(--danger);
     }
-
     .btn-danger:hover { background: rgba(255,82,82,0.2); }
-
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-    /* RESULT PANEL */
     .result-panel {
       border-radius: 12px;
       padding: 20px;
@@ -343,20 +325,9 @@
       border: 1px solid var(--border);
     }
 
-    .result-panel.success {
-      background: rgba(0,230,118,0.08);
-      border-color: var(--success);
-    }
-
-    .result-panel.error {
-      background: rgba(255,82,82,0.08);
-      border-color: var(--danger);
-    }
-
-    .result-panel.warn {
-      background: rgba(255,171,64,0.08);
-      border-color: var(--warn);
-    }
+    .result-panel.success { background: rgba(0,230,118,0.08); border-color: var(--success); }
+    .result-panel.error { background: rgba(255,82,82,0.08); border-color: var(--danger); }
+    .result-panel.warn { background: rgba(255,171,64,0.08); border-color: var(--warn); }
 
     .result-name {
       font-family: var(--mono);
@@ -365,7 +336,6 @@
       margin-bottom: 8px;
     }
 
-    /* CONFIDENCE BAR */
     .confidence-wrap { margin-top: 12px; }
 
     .confidence-label {
@@ -395,7 +365,6 @@
     .confidence-fill.mid { background: var(--warn); }
     .confidence-fill.low { background: var(--danger); }
 
-    /* PERSONS GRID */
     .persons-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -426,20 +395,9 @@
       line-height: 80px;
     }
 
-    .person-name {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-      word-break: break-word;
-    }
+    .person-name { font-family: var(--mono); font-size: 0.85rem; margin-bottom: 4px; word-break: break-word; }
+    .person-meta { font-size: 0.72rem; color: var(--muted); margin-bottom: 10px; }
 
-    .person-meta {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    /* LOGS */
     .log-entry {
       display: flex;
       align-items: center;
@@ -451,30 +409,13 @@
 
     .log-entry:last-child { border-bottom: none; }
 
-    .log-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
+    .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .log-dot.ok { background: var(--success); }
     .log-dot.fail { background: var(--danger); }
-
     .log-name { font-family: var(--mono); flex: 1; }
+    .log-conf { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+    .log-time { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
 
-    .log-conf {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .log-time {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    /* TOAST */
     #toast {
       position: fixed;
       bottom: 30px;
@@ -490,16 +431,11 @@
       max-width: 320px;
     }
 
-    #toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
+    #toast.show { transform: translateY(0); opacity: 1; }
     #toast.success { background: var(--success); color: #000; }
     #toast.error { background: var(--danger); color: white; }
     #toast.info { background: var(--accent2); color: white; }
 
-    /* SPINNER */
     .spinner {
       display: inline-block;
       width: 16px; height: 16px;
@@ -511,7 +447,6 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* LIVE MODE */
     #liveResult {
       margin-top: 16px;
       padding: 16px;
@@ -523,12 +458,7 @@
       min-height: 60px;
     }
 
-    .scanning-text {
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .scanning-text { color: var(--muted); display: flex; align-items: center; gap: 8px; }
 
     input[type="file"] { display: none; }
 
@@ -560,10 +490,9 @@
     <button class="tab-btn" onclick="switchTab('logs')">📋 Logs</button>
   </div>
 
-  <!-- ─── TAB: RECONHECER ─────────────────────────── -->
+  <!-- TAB: RECONHECER -->
   <div class="tab-panel active" id="tab-recognize">
     <div class="grid2">
-      <!-- Câmera ao vivo -->
       <div class="card">
         <div class="card-title">📡 CÂMERA AO VIVO</div>
         <div class="camera-wrap">
@@ -581,7 +510,6 @@
         </div>
       </div>
 
-      <!-- Upload de foto -->
       <div class="card">
         <div class="card-title">🖼️ UPLOAD DE FOTO</div>
         <input type="file" id="recognizeFile" accept="image/*" onchange="previewRecognize(event)">
@@ -590,13 +518,13 @@
           <strong>Clique ou arraste uma foto</strong>
           <small>JPG, PNG, WEBP</small>
         </div>
-        <img id="recognizePreview" src="" alt="" style="display:none; width:100%; border-radius:8px; margin-top:12px; border:1px solid var(--border)">
+        <img id="recognizePreview" src="" alt="">
         <button class="btn btn-primary mt-3" onclick="recognizeUpload()" id="btnRecUpload" disabled>🔍 Reconhecer Foto</button>
 
         <div class="result-panel" id="uploadResult">
           <div class="result-name" id="uploadResultName"></div>
           <div id="uploadResultMsg"></div>
-          <div class="confidence-wrap" id="uploadConfWrap">
+          <div class="confidence-wrap">
             <div class="confidence-label">
               <span>Confiança</span>
               <span id="uploadConfPct">0%</span>
@@ -608,11 +536,10 @@
         </div>
       </div>
     </div>
-
     <canvas id="captureCanvas" style="display:none"></canvas>
   </div>
 
-  <!-- ─── TAB: CADASTRAR ─────────────────────────── -->
+  <!-- TAB: CADASTRAR -->
   <div class="tab-panel" id="tab-register">
     <div class="grid2">
       <div class="card">
@@ -621,7 +548,6 @@
           <label>NOME COMPLETO</label>
           <input type="text" id="regName" placeholder="Ex: João Silva" />
         </div>
-
         <div class="input-group">
           <label>FOTO</label>
           <input type="file" id="registerFile" accept="image/*" onchange="previewRegister(event)">
@@ -632,11 +558,9 @@
           </div>
           <img id="registerPreview" src="" alt="">
         </div>
-
         <button class="btn btn-primary" onclick="registerPerson()" id="btnRegister">
           ➕ Cadastrar Pessoa
         </button>
-
         <div class="result-panel" id="registerResult" style="margin-top:16px;">
           <div id="registerResultMsg"></div>
         </div>
@@ -663,7 +587,7 @@
     </div>
   </div>
 
-  <!-- ─── TAB: PESSOAS ───────────────────────────── -->
+  <!-- TAB: PESSOAS -->
   <div class="tab-panel" id="tab-persons">
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
@@ -676,7 +600,7 @@
     </div>
   </div>
 
-  <!-- ─── TAB: LOGS ──────────────────────────────── -->
+  <!-- TAB: LOGS -->
   <div class="tab-panel" id="tab-logs">
     <div class="card">
       <div class="card-title" style="justify-content: space-between;">
@@ -693,9 +617,8 @@
 <div id="toast"></div>
 
 <script>
-  const API = '';  // mesmo domínio
+  const API = '';
 
-  // ─── TABS ─────────────────────────────────────────
   function switchTab(name) {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -705,7 +628,6 @@
     if (name === 'logs') loadLogs();
   }
 
-  // ─── TOAST ────────────────────────────────────────
   function toast(msg, type = 'info') {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -713,7 +635,6 @@
     setTimeout(() => t.className = '', 3000);
   }
 
-  // ─── CAMERA ───────────────────────────────────────
   let stream = null;
 
   async function startCamera() {
@@ -762,16 +683,10 @@
 
     if (data.recognized) {
       res.innerHTML = `
-        <div style="color:var(--success); font-weight:700; font-size:1.1rem; margin-bottom:8px;">
-          ✅ ${data.person}
-        </div>
+        <div style="color:var(--success); font-weight:700; font-size:1.1rem; margin-bottom:8px;">✅ ${data.person}</div>
         <div style="font-size:0.8rem; color:var(--muted); margin-bottom:8px;">${data.message}</div>
-        <div class="confidence-label">
-          <span>Confiança</span><span>${conf}%</span>
-        </div>
-        <div class="confidence-bar">
-          <div class="confidence-fill" style="width:${conf}%; background:${barColor}"></div>
-        </div>`;
+        <div class="confidence-label"><span>Confiança</span><span>${conf}%</span></div>
+        <div class="confidence-bar"><div class="confidence-fill" style="width:${conf}%; background:${barColor}"></div></div>`;
     } else {
       res.innerHTML = `
         <div style="color:var(--danger); font-weight:700; margin-bottom:6px;">❌ Não reconhecido</div>
@@ -779,7 +694,6 @@
     }
   }
 
-  // ─── UPLOAD RECOGNIZE ─────────────────────────────
   function previewRecognize(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -834,7 +748,6 @@
     fill.className = 'confidence-fill ' + (conf >= 75 ? 'high' : conf >= 50 ? 'mid' : 'low');
   }
 
-  // ─── REGISTER ─────────────────────────────────────
   function previewRegister(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -888,7 +801,6 @@
     }
   }
 
-  // ─── PERSONS ──────────────────────────────────────
   async function loadPersons() {
     const cont = document.getElementById('personsContainer');
     cont.innerHTML = '<p class="text-muted" style="text-align:center;padding:20px">Carregando...</p>';
@@ -923,7 +835,6 @@
     }
   }
 
-  // ─── LOGS ─────────────────────────────────────────
   async function loadLogs() {
     const cont = document.getElementById('logsContainer');
     cont.innerHTML = '<p class="text-muted" style="text-align:center;padding:20px">Carregando...</p>';
@@ -946,7 +857,6 @@
     }
   }
 
-  // ─── DRAG & DROP ──────────────────────────────────
   ['recognizeDrop', 'registerDrop'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('dragover'); });
