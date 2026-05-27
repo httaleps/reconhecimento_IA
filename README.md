@@ -1,155 +1,137 @@
+---
+title: FaceID Reconhecimento Facial
+emoji: 🔍
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # FaceID — Sistema de Reconhecimento Facial
 
-Projeto acadêmico de reconhecimento facial usando **DeepFace** + **FastAPI** + **SQLite**.
+Sistema acadêmico de reconhecimento facial desenvolvido com DeepFace e FastAPI, com suporte a cadastro de rostos, reconhecimento em tempo real via câmera e histórico de identificações.
+
+---
+
+## Tecnologias Utilizadas
+
+| Tecnologia | Finalidade |
+|---|---|
+| Python 3.11 | Linguagem principal |
+| FastAPI | API REST e servidor web |
+| DeepFace | Detecção e reconhecimento facial |
+| TensorFlow / Keras | Backend do modelo de IA |
+| PostgreSQL | Banco de dados relacional |
+| SQLAlchemy | ORM para acesso ao banco |
+| Cloudinary | Armazenamento persistente de imagens |
+| Uvicorn | Servidor ASGI |
+| Jinja2 | Renderização de templates HTML |
+
+---
+
+## Funcionalidades
+
+- Cadastro de pessoas com foto via upload ou câmera
+- Reconhecimento facial em tempo real com porcentagem de confiança
+- Suporte a rostos frontais e em perfil (detector RetinaFace)
+- Histórico completo de reconhecimentos com timestamp
+- Interface web responsiva sem dependência de frameworks frontend
+- API REST documentada automaticamente via Swagger
 
 ---
 
 ## Estrutura do Projeto
 
 ```
-face_recognition_project/
+.
 ├── app/
-│   ├── __init__.py
-│   ├── main.py          ← API FastAPI (rotas)
-│   ├── models.py        ← Modelos do banco (SQLAlchemy)
-│   ├── database.py      ← Conexão SQLite
-│   ├── crud.py          ← Operações no banco
-│   └── recognition.py  ← Lógica DeepFace
+│   ├── main.py          # Rotas e inicialização da API
+│   ├── models.py        # Modelos do banco de dados
+│   ├── database.py      # Configuração da conexão
+│   ├── crud.py          # Operações no banco
+│   ├── recognition.py   # Lógica de reconhecimento facial
+│   └── storage.py       # Integração com Cloudinary
 ├── templates/
-│   └── index.html       ← Frontend completo
-├── faces/               ← Fotos cadastradas (criado automaticamente)
-├── run.py               ← Ponto de entrada
+│   └── index.html       # Interface web
+├── static/              # Arquivos estáticos
+├── Dockerfile           # Configuração para deploy
 ├── requirements.txt
-├── render.yaml          ← Config deploy Render.com
-└── Procfile
+└── run.py               # Ponto de entrada local
 ```
 
 ---
 
-## Instalação Local (PyCharm)
+## Endpoints da API
 
-### 1. Clonar / abrir o projeto no PyCharm
+| Método | Rota | Descricao |
+|---|---|---|
+| GET | / | Interface web |
+| POST | /api/register | Cadastrar pessoa (form-data: name, file) |
+| POST | /api/recognize | Reconhecer por upload de foto |
+| POST | /api/recognize/base64 | Reconhecer por imagem base64 (câmera) |
+| GET | /api/persons | Listar pessoas cadastradas |
+| DELETE | /api/persons/{id} | Remover pessoa |
+| GET | /api/logs | Histórico de reconhecimentos |
 
-### 2. Criar ambiente virtual
+Documentação interativa disponível em `/docs` (Swagger UI).
+
+---
+
+## Como Executar Localmente
+
+**Requisitos:** Python 3.11, pip
+
 ```bash
+# 1. Criar e ativar ambiente virtual
 python -m venv venv
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-```
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Linux/Mac
 
-### 3. Instalar dependências
-```bash
+# 2. Instalar dependências
 pip install -r requirements.txt
-```
 
-> A primeira instalação do DeepFace é pesada (~1GB de modelos). Tenha paciência.
-
-### 4. Rodar o servidor
-```bash
+# 3. Iniciar o servidor
 python run.py
+
+# 4. Acessar no navegador
+# http://localhost:8000
 ```
 
-### 5. Acessar no navegador
-```
-http://localhost:8000
-```
+Na primeira execução o DeepFace fara o download automatico dos modelos de IA (aproximadamente 200MB).
 
 ---
 
-## API — Endpoints
+## Variaveis de Ambiente
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| `GET` | `/` | Interface web |
-| `POST` | `/api/register` | Cadastrar pessoa (form-data: name, file) |
-| `POST` | `/api/recognize` | Reconhecer por upload de foto |
-| `POST` | `/api/recognize/base64` | Reconhecer por base64 (câmera) |
-| `GET` | `/api/persons` | Listar pessoas cadastradas |
-| `DELETE` | `/api/persons/{id}` | Remover pessoa |
-| `GET` | `/api/logs` | Histórico de reconhecimentos |
+Para deploy, configure as seguintes variaveis:
 
-### Documentação automática (Swagger):
-```
-http://localhost:8000/docs
-```
+| Variavel | Descricao |
+|---|---|
+| DATABASE_URL | URL de conexao com o PostgreSQL |
+| CLOUDINARY_CLOUD_NAME | Nome do cloud no Cloudinary |
+| CLOUDINARY_API_KEY | Chave de API do Cloudinary |
+| CLOUDINARY_API_SECRET | Segredo de API do Cloudinary |
 
 ---
 
-## Deploy Gratuito — Render.com
+## Sistema de Confianca
 
-### Passo a passo:
-
-1. **Criar conta em** [render.com](https://render.com) (gratuito)
-
-2. **Subir para GitHub:**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/SEU_USUARIO/SEU_REPO.git
-   git push -u origin main
-   ```
-
-3. **No Render:**
-   - New → Web Service
-   - Conecte seu repositório GitHub
-   - O `render.yaml` já configura tudo automaticamente
-   - Clique em **Deploy**
-
-4. **URL pública** será gerada:
-   ```
-   https://faceid-reconhecimento-facial.onrender.com
-   ```
-
-> No plano gratuito do Render, o servidor hiberna após 15 min de inatividade. No primeiro acesso pode demorar ~1 min para "acordar".
-
----
-
-## Tecnologias
-
-| Lib | Função |
-|-----|--------|
-| **DeepFace** | Detecção e comparação de rostos |
-| **FastAPI** | API REST moderna em Python |
-| **SQLite + SQLAlchemy** | Banco de dados local |
-| **Uvicorn** | Servidor ASGI |
-| **Jinja2** | Templates HTML |
-
-### Modelos DeepFace disponíveis (edite `recognition.py`):
-- `Facenet` ← padrão (bom custo-benefício)
-- `Facenet512` ← mais preciso, mais lento
-- `ArcFace` ← excelente para produção
-- `VGG-Face` ← pioneiro, pesado
-- `DeepFace` ← modelo original
-
----
-
-## Como funciona o sistema de confiança
-
-O DeepFace calcula a **distância coseno** entre os embeddings faciais (vetores numéricos que representam o rosto).
+O reconhecimento utiliza distancia cosseno entre embeddings faciais gerados pelo modelo Facenet.
 
 ```
-distância coseno: 0.0 = idêntico | 1.0 = completamente diferente
-
-confiança (%) = (1 - distância) × 100
+Confianca (%) = (1 - distancia_cosseno) x 100
 ```
 
-| Confiança | Interpretação |
-|-----------|---------------|
-| ≥ 75% | Match seguro |
-| 50–74% | Match incerto |
-| < 50% | Não reconhecido |
+| Faixa | Interpretacao |
+|---|---|
+| Acima de 75% | Identificacao confiavel |
+| Entre 50% e 75% | Identificacao incerta |
+| Abaixo de 50% | Nao reconhecido |
 
-O limiar padrão é `0.40` (cosine), ajustável em `recognition.py`.
+O limiar padrao e 0.40 (distancia cosseno), ajustavel em `app/recognition.py`.
 
 ---
 
-## Banco de Dados
+## Autor
 
-SQLite gerado automaticamente em `faceid.db` com três tabelas:
-
-- **persons** — nome, data de cadastro
-- **photos** — caminho das fotos por pessoa
-- **recognition_logs** — histórico de reconhecimentos com timestamp e confiança
+Desenvolvido como projeto academico para avaliacao em disciplina de Inteligencia Artificial.
